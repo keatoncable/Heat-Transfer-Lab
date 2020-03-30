@@ -5,6 +5,8 @@ close all
 %% Read in data
 forced = importdata('Sphere_Forced_edit.txt');
 natural = importdata('Sphere_Natural_edit.txt');
+% fcube = importdata('
+% ncube = 
 
 %% Constants
 rho = 7930; %material: 304 SS
@@ -27,8 +29,15 @@ t_nat = natural(:,1);
 
 figure
 plot(t_for,ln_for)
+title('Forced Sphere Correlation')
+xlabel('Time (s)')
+ylabel('Natural Log Function')
+
 figure
 plot(t_nat,ln_nat)
+title('Natural Sphere Correlation')
+xlabel('Time (s)')
+ylabel('Natural Log Function')
 
 reg_for = polyfit(ln_for,t_for,1);
 reg_nat = polyfit(ln_nat,t_nat,1);
