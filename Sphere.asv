@@ -2,4 +2,22 @@ clear
 clc
 close all
 
-forced = 
+%% Read in data
+forced = importdata('Sphere_Forced_edit.txt');
+natural = importdata('Sphere_Natural_edit.txt');
+
+%% Regression
+lfor = length(forced(:,1));
+lnat = length(natural(:,1));
+tff = forced(lfor,2);
+tfn = natural(lnat,2);
+tinf = 20;
+for i = 1:lfor-1
+    ln_for = log((forced(i+1,2)-tinf)./((forced(i,2)-tinf));
+end
+ln_nat = log((natural(:,2)-tinf)./(tfn-tinf));
+t_for = forced(:,1);
+t_nat = natural(:,1);
+
+figure
+plot(t_for,ln_for)
