@@ -229,4 +229,130 @@ h_natural_cu_rm = (rho*Vcu*cp)/(abs(reg_natcu_rm(1))*Acu)
 h_forcu_filt = (rho*Vcu*cp)/(abs(reg_forcu_filt(1))*Acu)
 h_forced_filt = (rho*V*cp)/(abs(reg_forced_filt(1))*As)
 
+%% Different Filters
+outs = [];
+timesto = [];
+filt = [];
+
+lforcu_rm = length(fcube(:,1));
+lnatcu_rm = length(ncube(:,1));
+tofcu_rm = fcube(1,2);
+toncu_rm = ncube(1,2);
+tinf = 20;
+
+ln_forcu_rm = log((tofcu_rm-tinf)./(fcube(:,2)-tinf));
+ln_natcu_rm = log((toncu_rm-tinf)./(ncube(:,2)-tinf));
+t_forcu_rm = fcube(:,1);
+t_natcu_rm = ncube(:,1);
+
+for i = 7:(length(ln_forcu_rm)-7)
+    window = ln_forcu_rm(i-5:i+5);
+    time = fcube(i-5:i+5,1);
+    std_fcu = std(ln_forcu_rm(i-5:i+5));
+    mean_fcu = mean(ln_forcu_rm(i-5:i+5));
+    lwin = length(window);
+        if window(6)>=(mean_fcu+std_fcu/2) || window(6)<=(mean_fcu-std_fcu)
+            outs = [outs window(6)];
+        else
+            timesto = [timesto ; time(6)];
+            filt = [filt ;  window(6)];
+        end
+end
+forcu_filt_2 = [timesto, filt];
+
+outs = [];
+timesto = [];
+filt = [];
+
+
+for i = 7:(length(ln_forcu_rm)-7)
+    window = ln_forcu_rm(i-5:i+5);
+    time = fcube(i-5:i+5,1);
+    std_fcu = std(ln_forcu_rm(i-5:i+5));
+    mean_fcu = mean(ln_forcu_rm(i-5:i+5));
+    lwin = length(window);
+        if window(6)>=(mean_fcu+std_fcu/4) || window(6)<=(mean_fcu-std_fcu)
+            outs = [outs window(6)];
+        else
+            timesto = [timesto ; time(6)];
+            filt = [filt ;  window(6)];
+        end
+end
+forcu_filt_4 = [timesto, filt];
+
+outs = [];
+timesto = [];
+filt = [];
+
+
+for i = 7:(length(ln_forcu_rm)-7)
+    window = ln_forcu_rm(i-5:i+5);
+    time = fcube(i-5:i+5,1);
+    std_fcu = std(ln_forcu_rm(i-5:i+5));
+    mean_fcu = mean(ln_forcu_rm(i-5:i+5));
+    lwin = length(window);
+        if window(6)>=(mean_fcu+std_fcu/6) || window(6)<=(mean_fcu-std_fcu)
+            outs = [outs window(6)];
+        else
+            timesto = [timesto ; time(6)];
+            filt = [filt ;  window(6)];
+        end
+end
+forcu_filt_6 = [timesto, filt];
+
+outs = [];
+timesto = [];
+filt = [];
+
+
+for i = 7:(length(ln_forcu_rm)-7)
+    window = ln_forcu_rm(i-5:i+5);
+    time = fcube(i-5:i+5,1);
+    std_fcu = std(ln_forcu_rm(i-5:i+5));
+    mean_fcu = mean(ln_forcu_rm(i-5:i+5));
+    lwin = length(window);
+        if window(6)>=(mean_fcu+std_fcu/8) || window(6)<=(mean_fcu-std_fcu)
+            outs = [outs window(6)];
+        else
+            timesto = [timesto ; time(6)];
+            filt = [filt ;  window(6)];
+        end
+end
+forcu_filt_8 = [timesto, filt];
+
+figure
+plot(forcu_filt_2(:,1),forcu_filt_2(:,2))
+title('Forced Cube Correlation, Filtered, Std. Dev./2')
+xlabel('Time (s)')
+ylabel('Natural Log Function')
+
+figure
+plot(forcu_filt_4(:,1),forcu_filt_4(:,2))
+title('Forced Cube Correlation, Filtered, Std. Dev./4')
+xlabel('Time (s)')
+ylabel('Natural Log Function')
+
+figure
+plot(forcu_filt_6(:,1),forcu_filt_6(:,2))
+title('Forced Cube Correlation, Filtered, Std. Dev./6')
+xlabel('Time (s)')
+ylabel('Natural Log Function')
+
+figure
+plot(forcu_filt_8(:,1),forcu_filt_8(:,2))
+title('Forced Cube Correlation, Filtered, Std. Dev./8')
+xlabel('Time (s)')
+ylabel('Natural Log Function')
+
+reg_2 = polyfit(forcu_filt_2(:,2),forcu_filt_2(:,1),1);
+reg_4 = polyfit(forcu_filt_4(:,2),forcu_filt_4(:,1),1);
+reg_6 = polyfit(forcu_filt_6(:,2),forcu_filt_6(:,1),1);
+reg_8 = polyfit(forcu_filt_8(:,2),forcu_filt_8(:,1),1);
+
+h_2 = (rho*Vcu*cp)/(abs(reg_2(1))*Acu)
+h_4 = (rho*Vcu*cp)/(abs(reg_4(1))*Acu)
+h_6 = (rho*Vcu*cp)/(abs(reg_6(1))*Acu)
+h_8 = (rho*Vcu*cp)/(abs(reg_8(1))*Acu)
+
+
 
