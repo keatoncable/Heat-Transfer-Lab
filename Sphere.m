@@ -3,15 +3,36 @@ clc
 close all
 
 %% Read in data
+
 forced = importdata('Sphere_Forced_edit.txt');
 natural = importdata('Sphere_Natural_edit.txt');
 fcube = importdata('Cube_Forced_edit.txt');
 ncube = importdata('Cube_Natural_edit.txt');
 
-forced_rm = rmoutliers(forced,'mean');
-natural_rm = rmoutliers(natural,'mean');
-fcube_rm = rmoutliers(fcube,'mean');
-ncube_rm = rmoutliers(ncube,'mean');
+% [f_rm,loc] = rmoutliers(forced(:,2)) 
+% forced_rm = [forced(:,1) rmoutliers(forced(:,2))];
+% stdev = std(forced(:,2));
+% natural_rm = [natural(:,1) rmoutliers(natural(:,2))];
+% fcube_rm = [fcube(:,1) rmoutliers(fcube(:,2))];
+
+
+% for i = 5:(length(fcube(:,2))-5)
+%     window = fcube(i-3:i+3,2);
+%     time = fcube(i-3:i+3,1);
+%     std_fcu = std(fcube(i-3:i+3,2));
+%     mean_fcu = mean(fcube(i-3:i+3,2));
+%     lwin = length(window);
+%         if window(3)>=(mean_fcu+std_fcu) || window(3)<=(mean_fcu-std_fcu)
+%             outs = [outs window(3)];
+%         else
+%             timesto = [timesto ; time(3)];
+%             filt = [filt ;  window(3)];
+%         end
+% end
+% 
+% fcube_rm = [timesto filt];
+% 
+% ncube_rm = [ncube(:,1) rmoutliers(ncube(:,2))];
 
 %% Constants
 rho = 7930; %material: 304 SS
@@ -84,16 +105,16 @@ ylabel('Natural Log Function')
 
 
 %% Sphere Regression without Outliers
-lfor_rm = length(forced_rm(:,1));
-lnat_rm = length(natural_rm(:,1));
-tof_rm = forced_rm(1,2);
-ton_rm = natural_rm(1,2);
+lfor_rm = length(forced(:,1));
+lnat_rm = length(natural(:,1));
+tof_rm = forced(1,2);
+ton_rm = natural(1,2);
 tinf = 20;
 
-ln_for_rm = log((tof_rm-tinf)./(forced_rm(:,2)-tinf));
-ln_nat_rm = log((ton_rm-tinf)./(natural_rm(:,2)-tinf));
-t_for_rm = forced_rm(:,1);
-t_nat_rm = natural_rm(:,1);
+ln_for_rm = log((tof_rm-tinf)./(forced(:,2)-tinf));
+ln_nat_rm = log((ton_rm-tinf)./(natural(:,2)-tinf));
+t_for_rm = forced(:,1);
+t_nat_rm = natural(:,1);
 
 figure
 plot(t_for_rm,ln_for_rm)
@@ -111,20 +132,46 @@ reg_for_rm = polyfit(ln_for_rm,t_for_rm,1);
 reg_nat_rm = polyfit(ln_nat_rm,t_nat_rm,1);
 
 %% Cube Regression without Outliers
-lforcu_rm = length(fcube_rm(:,1));
-lnatcu_rm = length(ncube_rm(:,1));
-tofcu_rm = fcube_rm(1,2);
-toncu_rm = ncube_rm(1,2);
+outs = [];
+timesto = [];
+filt = [];
+
+lforcu_rm = length(fcube(:,1));
+lnatcu_rm = length(ncube(:,1));
+tofcu_rm = fcube(1,2);
+toncu_rm = ncube(1,2);
 tinf = 20;
 
-ln_forcu_rm = log((tofcu_rm-tinf)./(fcube_rm(:,2)-tinf));
-ln_natcu_rm = log((toncu_rm-tinf)./(ncube_rm(:,2)-tinf));
-t_forcu_rm = fcube_rm(:,1);
-t_natcu_rm = ncube_rm(:,1);
+ln_forcu_rm = log((tofcu_rm-tinf)./(fcube(:,2)-tinf));
+ln_natcu_rm = log((toncu_rm-tinf)./(ncube(:,2)-tinf));
+t_forcu_rm = fcube(:,1);
+t_natcu_rm = ncube(:,1);
+
+for i = 7:(length(ln_forcu_rm)-7)
+    window = ln_forcu_rm(i-5:i+5);
+    time = fcube(i-5:i+5,1);
+    std_fcu = std(ln_forcu_rm(i-5:i+5));
+    mean_fcu = mean(ln_forcu_rm(i-5:i+5));
+    lwin = length(window);
+        if window(6)>=(mean_fcu+std_fcu/6) || window(6)<=(mean_fcu-std_fcu)
+            outs = [outs window(6)];
+        else
+            timesto = [timesto ; time(6)];
+            filt = [filt ;  window(6)];
+        end
+end
+
+forcu_filt = [timesto, filt];
 
 figure
 plot(t_forcu_rm,ln_forcu_rm)
 title('Forced Cube Correlation without Outliers')
+xlabel('Time (s)')
+ylabel('Natural Log Function')
+
+figure
+plot(timesto,filt)
+title('Forced Cube Correlation, Filtered')
 xlabel('Time (s)')
 ylabel('Natural Log Function')
 
@@ -137,15 +184,20 @@ ylabel('Natural Log Function')
 reg_forcu_rm = polyfit(ln_forcu_rm,t_forcu_rm,1);
 reg_natcu_rm = polyfit(ln_natcu_rm,t_natcu_rm,1);
 
+reg_forcu_filt = polyfit(filt,timesto,1)
+
+
 %% h calc
-h_forced = (rho*V*cp)/(abs(reg_for(1))*As)
-h_natural = (rho*V*cp)/(abs(reg_nat(1))*As)
+h_forced_sph = (rho*V*cp)/(abs(reg_for(1))*As)
+h_natural_sph = (rho*V*cp)/(abs(reg_nat(1))*As)
 h_forced_cu = (rho*Vcu*cp)/(abs(reg_forcu(1))*Acu)
 h_natural_cu = (rho*Vcu*cp)/(abs(reg_natcu(1))*Acu)
 
-h_forced_rm = (rho*V*cp)/(abs(reg_for_rm(1))*As)
-h_natural_rm = (rho*V*cp)/(abs(reg_nat_rm(1))*As)
+h_forced_rm_sph = (rho*V*cp)/(abs(reg_for_rm(1))*As)
+h_natural_rm_sph = (rho*V*cp)/(abs(reg_nat_rm(1))*As)
 h_forced_cu_rm = (rho*Vcu*cp)/(abs(reg_forcu_rm(1))*Acu)
 h_natural_cu_rm = (rho*Vcu*cp)/(abs(reg_natcu_rm(1))*Acu)
+
+h_forcu_filt = (rho*Vcu*cp)/(abs(reg_forcu_filt(1))*Acu)
 
 
