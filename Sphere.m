@@ -9,31 +9,6 @@ natural = importdata('Sphere_Natural_edit.txt');
 fcube = importdata('Cube_Forced_edit.txt');
 ncube = importdata('Cube_Natural_edit.txt');
 
-% [f_rm,loc] = rmoutliers(forced(:,2)) 
-% forced_rm = [forced(:,1) rmoutliers(forced(:,2))];
-% stdev = std(forced(:,2));
-% natural_rm = [natural(:,1) rmoutliers(natural(:,2))];
-% fcube_rm = [fcube(:,1) rmoutliers(fcube(:,2))];
-
-
-% for i = 5:(length(fcube(:,2))-5)
-%     window = fcube(i-3:i+3,2);
-%     time = fcube(i-3:i+3,1);
-%     std_fcu = std(fcube(i-3:i+3,2));
-%     mean_fcu = mean(fcube(i-3:i+3,2));
-%     lwin = length(window);
-%         if window(3)>=(mean_fcu+std_fcu) || window(3)<=(mean_fcu-std_fcu)
-%             outs = [outs window(3)];
-%         else
-%             timesto = [timesto ; time(3)];
-%             filt = [filt ;  window(3)];
-%         end
-% end
-% 
-% fcube_rm = [timesto filt];
-% 
-% ncube_rm = [ncube(:,1) rmoutliers(ncube(:,2))];
-
 %% Constants
 rho = 7930; %material: 304 SS
 cp = 500;
