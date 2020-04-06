@@ -286,14 +286,14 @@ for i = 7:(length(ln_forcu_rm)-7)
     std_fcu = std(ln_forcu_rm(i-5:i+5));
     mean_fcu = mean(ln_forcu_rm(i-5:i+5));
     lwin = length(window);
-        if window(6)>=(mean_fcu+std_fcu/8) || window(6)<=(mean_fcu-std_fcu)
+        if window(6)>=(mean_fcu+std_fcu/10) || window(6)<=(mean_fcu-std_fcu)
             outs = [outs window(6)];
         else
             timesto = [timesto ; time(6)];
             filt = [filt ;  window(6)];
         end
 end
-forcu_filt_8 = [timesto, filt];
+forcu_filt_10 = [timesto, filt];
 
 figure
 plot(forcu_filt_2(:,1),forcu_filt_2(:,2))
@@ -314,20 +314,20 @@ xlabel('Time (s)')
 ylabel('Natural Log Function')
 
 figure
-plot(forcu_filt_8(:,1),forcu_filt_8(:,2))
-title('Forced Cube Correlation, Filtered, Std. Dev./8')
+plot(forcu_filt_10(:,1),forcu_filt_10(:,2))
+title('Forced Cube Correlation, Filtered, Std. Dev./10')
 xlabel('Time (s)')
 ylabel('Natural Log Function')
 
 reg_2 = polyfit(forcu_filt_2(:,2),forcu_filt_2(:,1),1);
 reg_4 = polyfit(forcu_filt_4(:,2),forcu_filt_4(:,1),1);
 reg_6 = polyfit(forcu_filt_6(:,2),forcu_filt_6(:,1),1);
-reg_8 = polyfit(forcu_filt_8(:,2),forcu_filt_8(:,1),1);
+reg_10 = polyfit(forcu_filt_10(:,2),forcu_filt_10(:,1),1);
 
 h_2 = (rho*Vcu*cp)/(abs(reg_2(1))*Acu)
 h_4 = (rho*Vcu*cp)/(abs(reg_4(1))*Acu)
 h_6 = (rho*Vcu*cp)/(abs(reg_6(1))*Acu)
-h_8 = (rho*Vcu*cp)/(abs(reg_8(1))*Acu)
+h_10 = (rho*Vcu*cp)/(abs(reg_10(1))*Acu)
 
 
 
