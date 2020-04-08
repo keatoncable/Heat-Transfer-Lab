@@ -329,7 +329,7 @@ h_6 = (rho*Vcu*cp)/(abs(reg_6(1))*Acu);
 h_10 = (rho*Vcu*cp)/(abs(reg_10(1))*Acu);
 
 %% Theoretical Values
-h_st_for = 62.8;
+h_st_for = 35.10;
 h_st_nat = 6.7;
 
 h_ct_for = 30.69;
@@ -358,6 +358,8 @@ sphere_exp =   {'Convective Coeff.' 'Value [W/mK]';
             'Outlier Algorithm, forced' h_forced_rm_sph;
             'Outlier Algorithm, natural' h_natural_rm_sph;
             'Filter, forced' h_forced_filt}
+  
+xlswrite('sphereexp.xlsx',sphere_exp,1)
         
 cube_exp =    {'Convective Coeff.' 'Value [W/mK]';
             'Forced' h_forced_cu;
@@ -366,13 +368,19 @@ cube_exp =    {'Convective Coeff.' 'Value [W/mK]';
             'Outlier Algorithm, natural' h_natural_cu_rm;
             'Filter, forced' h_forcu_filt}
         
+xlswrite('cubeexp.xlsx',cube_exp,1)
+        
 sph_comp = {'Comparison Coeff.' 'Percent Difference [%]';
             'Original vs. Algorithm' pd_frm;
             'Original vs. Filter' pd_ff;
             'Filter vs. Algorithm' pd_ffrm}
         
+xlswrite('sphcomp.xlsx',sph_comp,1)
+        
 cu_comp = {'Comparison Coeff.' 'Percent Difference [%]';
             'Original vs. Algorithm' pd_frmc;
             'Original vs. Filter' pd_ffc;
             'Filter vs. Algorithm' pd_ffrmc}
+        
+xlswrite('cucomp.xlsx',cu_comp,1)
             
