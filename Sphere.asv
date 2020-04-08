@@ -3,36 +3,10 @@ clc
 close all
 
 %% Read in data
-
 forced = importdata('Sphere_Forced_edit.txt');
 natural = importdata('Sphere_Natural_edit.txt');
 fcube = importdata('Cube_Forced_edit.txt');
 ncube = importdata('Cube_Natural_edit.txt');
-
-% [f_rm,loc] = rmoutliers(forced(:,2)) 
-% forced_rm = [forced(:,1) rmoutliers(forced(:,2))];
-% stdev = std(forced(:,2));
-% natural_rm = [natural(:,1) rmoutliers(natural(:,2))];
-% fcube_rm = [fcube(:,1) rmoutliers(fcube(:,2))];
-
-
-% for i = 5:(length(fcube(:,2))-5)
-%     window = fcube(i-3:i+3,2);
-%     time = fcube(i-3:i+3,1);
-%     std_fcu = std(fcube(i-3:i+3,2));
-%     mean_fcu = mean(fcube(i-3:i+3,2));
-%     lwin = length(window);
-%         if window(3)>=(mean_fcu+std_fcu) || window(3)<=(mean_fcu-std_fcu)
-%             outs = [outs window(3)];
-%         else
-%             timesto = [timesto ; time(3)];
-%             filt = [filt ;  window(3)];
-%         end
-% end
-% 
-% fcube_rm = [timesto filt];
-% 
-% ncube_rm = [ncube(:,1) rmoutliers(ncube(:,2))];
 
 %% Constants
 rho = 7930; %material: 304 SS
@@ -251,7 +225,7 @@ for i = 7:(length(ln_forcu_rm)-7)
     std_fcu = std(ln_forcu_rm(i-5:i+5));
     mean_fcu = mean(ln_forcu_rm(i-5:i+5));
     lwin = length(window);
-        if window(6)>=(mean_fcu+std_fcu/6) || window(6)<=(mean_fcu-std_fcu)
+        if window(6)>=(mean_fcu+std_fcu/2) || window(6)<=(mean_fcu-std_fcu)
             outs = [outs window(6)];
         else
             timesto = [timesto ; time(6)];
@@ -271,7 +245,7 @@ for i = 7:(length(ln_forcu_rm)-7)
     std_fcu = std(ln_forcu_rm(i-5:i+5));
     mean_fcu = mean(ln_forcu_rm(i-5:i+5));
     lwin = length(window);
-        if window(6)>=(mean_fcu+std_fcu/6) || window(6)<=(mean_fcu-std_fcu)
+        if window(6)>=(mean_fcu+std_fcu/4) || window(6)<=(mean_fcu-std_fcu)
             outs = [outs window(6)];
         else
             timesto = [timesto ; time(6)];
@@ -300,17 +274,97 @@ for i = 7:(length(ln_forcu_rm)-7)
 end
 forcu_filt_6 = [timesto, filt];
 
+outs = [];
+timesto = [];
+filt = [];
+
+
+for i = 7:(length(ln_forcu_rm)-7)
+    window = ln_forcu_rm(i-5:i+5);
+    time = fcube(i-5:i+5,1);
+    std_fcu = std(ln_forcu_rm(i-5:i+5));
+    mean_fcu = mean(ln_forcu_rm(i-5:i+5));
+    lwin = length(window);
+        if window(6)>=(mean_fcu+std_fcu/10) || window(6)<=(mean_fcu-std_fcu)
+            outs = [outs window(6)];
+        else
+            timesto = [timesto ; time(6)];
+            filt = [filt ;  window(6)];
+        end
+end
+forcu_filt_10 = [timesto, filt];
+
 figure
-plot(forcu_filt_6(:,1),)
-title('Forced Cube Correlation, Filtered')
+plot(forcu_filt_2(:,1),forcu_filt_2(:,2))
+title('Forced Cube Correlation, Filtered, Std. Dev./2')
 xlabel('Time (s)')
 ylabel('Natural Log Function')
 
+figure
+plot(forcu_filt_4(:,1),forcu_filt_4(:,2))
+title('Forced Cube Correlation, Filtered, Std. Dev./4')
+xlabel('Time (s)')
+ylabel('Natural Log Function')
 
-reg_forcu_rm = polyfit(ln_forcu_rm,t_forcu_rm,1);
-reg_natcu_rm = polyfit(ln_natcu_rm,t_natcu_rm,1);
+figure
+plot(forcu_filt_6(:,1),forcu_filt_6(:,2))
+title('Forced Cube Correlation, Filtered, Std. Dev./6')
+xlabel('Time (s)')
+ylabel('Natural Log Function')
 
-reg_forcu_filt = polyfit(filt,timesto,1);
+figure
+plot(forcu_filt_10(:,1),forcu_filt_10(:,2))
+title('Forced Cube Correlation, Filtered, Std. Dev./10')
+xlabel('Time (s)')
+ylabel('Natural Log Function')
 
+reg_2 = polyfit(forcu_filt_2(:,2),forcu_filt_2(:,1),1);
+reg_4 = polyfit(forcu_filt_4(:,2),forcu_filt_4(:,1),1);
+reg_6 = polyfit(forcu_filt_6(:,2),forcu_filt_6(:,1),1);
+reg_10 = polyfit(forcu_filt_10(:,2),forcu_filt_10(:,1),1);
 
+h_2 = (rho*Vcu*cp)/(abs(reg_2(1))*Acu);
+h_4 = (rho*Vcu*cp)/(abs(reg_4(1))*Acu);
+h_6 = (rho*Vcu*cp)/(abs(reg_6(1))*Acu);
+h_10 = (rho*Vcu*cp)/(abs(reg_10(1))*Acu);
 
+%% Theoretical Values
+h_st_for = 62.8;
+h_st_nat = 6.7;
+
+h_ct_for = 30.69;
+h_ct_nat = 4.69;
+
+%% Filter Percent Difference
+pd_frm = pdiff(h_forced_sph,h_forced_rm_sph)
+pd_ff = pdiff(h_forced_sph,h_forced_filt)
+pd_ffrm = pdiff(h_forced_filt,h_forced_rm_sph)
+
+pd_frmc = pdiff(h_forced_cu,h_forced_cu_rm)
+pd_ffc = pdiff(h_forced_cu,h_forcu_filt)
+pd_ffrmc = pdiff(h_forcu_filt,h_forced_cu_rm)
+
+%% Exp vs Theor Percent Difference
+pd_sph_f = pdiff(h_forced_filt,h_st_for)
+pd_sph_n = pdiff(h_natural_sph,h_st_nat)
+
+pd_cu_f = pdiff(h_forcu_filt,h_ct_for)
+pd_cu_n = pdiff(h_natural_cu,h_ct_nat)
+
+%% Tables
+sphere_exp =   {'Convective Coeff.' 'Value';
+            'Forced' h_forced_sph;
+            'Natural' h_natural_sph;
+            'Outlier Algorithm, forced' h_forced_rm_sph;
+            'Outlier Algorithm, natural' h_natural_rm_sph;
+            'Filter, forced' h_forced_filt}
+        
+cube_exp =    {'Convective Coeff.' 'Value ';
+            'Forced' h_forced_cu;
+            'Natural' h_natural_cu;
+            'Outlier Algorithm, forced' h_forced_cu_rm;
+            'Outlier Algorithm, natural' h_natural_cu_rm;
+            'Filter, forced' h_forcu_filt}
+        
+sph_comp = {'Comparison' 'Percent Difference'
+            

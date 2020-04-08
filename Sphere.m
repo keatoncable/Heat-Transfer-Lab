@@ -3,7 +3,6 @@ clc
 close all
 
 %% Read in data
-
 forced = importdata('Sphere_Forced_edit.txt');
 natural = importdata('Sphere_Natural_edit.txt');
 fcube = importdata('Cube_Forced_edit.txt');
@@ -324,10 +323,56 @@ reg_4 = polyfit(forcu_filt_4(:,2),forcu_filt_4(:,1),1);
 reg_6 = polyfit(forcu_filt_6(:,2),forcu_filt_6(:,1),1);
 reg_10 = polyfit(forcu_filt_10(:,2),forcu_filt_10(:,1),1);
 
-h_2 = (rho*Vcu*cp)/(abs(reg_2(1))*Acu)
-h_4 = (rho*Vcu*cp)/(abs(reg_4(1))*Acu)
-h_6 = (rho*Vcu*cp)/(abs(reg_6(1))*Acu)
-h_10 = (rho*Vcu*cp)/(abs(reg_10(1))*Acu)
+h_2 = (rho*Vcu*cp)/(abs(reg_2(1))*Acu);
+h_4 = (rho*Vcu*cp)/(abs(reg_4(1))*Acu);
+h_6 = (rho*Vcu*cp)/(abs(reg_6(1))*Acu);
+h_10 = (rho*Vcu*cp)/(abs(reg_10(1))*Acu);
 
+%% Theoretical Values
+h_st_for = 62.8;
+h_st_nat = 6.7;
 
+h_ct_for = 30.69;
+h_ct_nat = 4.69;
 
+%% Filter Percent Difference
+pd_frm = pdiff(h_forced_sph,h_forced_rm_sph)
+pd_ff = pdiff(h_forced_sph,h_forced_filt)
+pd_ffrm = pdiff(h_forced_filt,h_forced_rm_sph)
+
+pd_frmc = pdiff(h_forced_cu,h_forced_cu_rm)
+pd_ffc = pdiff(h_forced_cu,h_forcu_filt)
+pd_ffrmc = pdiff(h_forcu_filt,h_forced_cu_rm)
+
+%% Exp vs Theor Percent Difference
+pd_sph_f = pdiff(h_forced_filt,h_st_for)
+pd_sph_n = pdiff(h_natural_sph,h_st_nat)
+
+pd_cu_f = pdiff(h_forcu_filt,h_ct_for)
+pd_cu_n = pdiff(h_natural_cu,h_ct_nat)
+
+%% Tables
+sphere_exp =   {'Convective Coeff.' 'Value [W/mK]';
+            'Forced' h_forced_sph;
+            'Natural' h_natural_sph;
+            'Outlier Algorithm, forced' h_forced_rm_sph;
+            'Outlier Algorithm, natural' h_natural_rm_sph;
+            'Filter, forced' h_forced_filt}
+        
+cube_exp =    {'Convective Coeff.' 'Value [W/mK]';
+            'Forced' h_forced_cu;
+            'Natural' h_natural_cu;
+            'Outlier Algorithm, forced' h_forced_cu_rm;
+            'Outlier Algorithm, natural' h_natural_cu_rm;
+            'Filter, forced' h_forcu_filt}
+        
+sph_comp = {'Comparison Coeff.' 'Percent Difference [%]';
+            'Original vs. Algorithm' pd_frm;
+            'Original vs. Filter' pd_ff;
+            'Filter vs. Algorithm' pd_ffrm}
+        
+cu_comp = {'Comparison Coeff.' 'Percent Difference [%]';
+            'Original vs. Algorithm' pd_frmc;
+            'Original vs. Filter' pd_ffc;
+            'Filter vs. Algorithm' pd_ffrmc}
+            
