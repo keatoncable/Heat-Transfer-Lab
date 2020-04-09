@@ -368,7 +368,7 @@ cube_exp =    {'Convective Coeff.' 'Value [W/mK]';
             'Outlier Algorithm, natural' h_natural_cu_rm;
             'Filter, forced' h_forcu_filt}
         
-writecell(cube_exp,'cubeexp.xlsx')
+writecell(cube_exp,'cube.xlsx')
         
 sph_comp = {'Comparison Coeff.' 'Percent Difference [%]';
             'Original vs. Algorithm' pd_frm;
