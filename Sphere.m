@@ -359,7 +359,7 @@ sphere_exp =   {'Convective Coeff.' 'Value [W/mK]';
             'Outlier Algorithm, natural' h_natural_rm_sph;
             'Filter, forced' h_forced_filt}
   
-xlswrite('sphereexp.xlsx',sphere_exp,1)
+writecell(sphere_exp,'sphereexp.xlsx')
         
 cube_exp =    {'Convective Coeff.' 'Value [W/mK]';
             'Forced' h_forced_cu;
@@ -368,19 +368,19 @@ cube_exp =    {'Convective Coeff.' 'Value [W/mK]';
             'Outlier Algorithm, natural' h_natural_cu_rm;
             'Filter, forced' h_forcu_filt}
         
-xlswrite('cubeexp.xlsx',cube_exp,1)
+writecell(cube_exp,'cubeexp.xlsx')
         
 sph_comp = {'Comparison Coeff.' 'Percent Difference [%]';
             'Original vs. Algorithm' pd_frm;
             'Original vs. Filter' pd_ff;
             'Filter vs. Algorithm' pd_ffrm}
         
-xlswrite('sphcomp.xlsx',sph_comp,1)
+writecell(sph_comp,'sphcomp.xlsx')
         
 cu_comp = {'Comparison Coeff.' 'Percent Difference [%]';
             'Original vs. Algorithm' pd_frmc;
             'Original vs. Filter' pd_ffc;
             'Filter vs. Algorithm' pd_ffrmc}
         
-xlswrite('cucomp.xlsx',cu_comp,1)
+writecell(cu_comp,'cucomp.xlsx')
             
