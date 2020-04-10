@@ -63,9 +63,9 @@ reg_forcu2 = polyfit(t_forcu,ln_forcu,1);
 reg_natcu2 = polyfit(t_natcu,ln_natcu,1);
 
 figure
-hold on
+%hold on
 plot(t_forcu,ln_forcu)
-plot(10:1:1150,polyval(reg_forcu2,10:1:1150))
+%plot(10:1:1150,polyval(reg_forcu2,10:1:1150))
 title('Forced Cube Correlation')
 xlabel('Time (s)')
 ylabel('Natural Log Function')
